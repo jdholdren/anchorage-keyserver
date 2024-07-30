@@ -1,14 +1,15 @@
 #![allow(dead_code, unused_imports, unused_variables)]
 
-pub mod repo;
+mod errors;
+mod repo;
 mod server;
-mod users;
 
 use std::env;
 
+use repo::Repo;
+
 use anyhow::{anyhow, bail, Context, Result};
 use envconfig::Envconfig;
-use repo::Repo;
 use sqlx::SqlitePool;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 

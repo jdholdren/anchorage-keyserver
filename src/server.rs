@@ -1,6 +1,7 @@
 use std::time::Instant;
 
 use axum::{
+    debug_handler,
     extract::{Request, State},
     http::StatusCode,
     response::IntoResponse,
@@ -42,7 +43,18 @@ async fn health_check(State(state): State<AppState>) -> impl IntoResponse {
     })
 }
 
-async fn create_user(State(state): State<AppState>) -> impl IntoResponse {
-    // TODO: use a standard error format and don't unwrap
-    state.repo.insert_user().await.unwrap();
+#[derive(Debug, Serialize)]
+struct User {}
+
+#[debug_handler]
+async fn create_user(State(state): State<AppState>) -> Result<Json<User>, crate::errors::Error> {
+    state.repo.insert_user().await.map_err(|err| {
+        // TODO: Detect a conflict
+        crate::errors::Error {
+            reason: crate::errors::Reason::Internal,
+            message: format!("error creating user: {}", err),
+        }
+    })?;
+
+    Ok(Json(User {}))
 }

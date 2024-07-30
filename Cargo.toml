@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.86"
-axum = "0.7.5"
+axum = { version = "0.7.5", features = ["macros"] }
 envconfig = "0.10.0"
 serde = { version = "1.0.204", features = ["derive"] }
 sqlx = { version = "0.8.0", features = ["runtime-tokio", "sqlite"] }

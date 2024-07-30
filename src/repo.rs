@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::time::SystemTime;
 
 use anyhow::Context;
@@ -28,8 +29,19 @@ impl From<anyhow::Error> for Error {
     }
 }
 
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let msg = match self {
+            Error::Internal(err) => format!("internal error: {err}: {}", err.source().unwrap()),
+            Error::NotFound => "not found".to_string(),
+        };
+
+        write!(f, "{}", msg)
+    }
+}
+
 // Represents a row in the `users` table.
-struct UserRow {
+pub struct UserRow {
     email: String,
     key_contents: String,
     confirmation_code: String,
